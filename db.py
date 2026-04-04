@@ -22,7 +22,12 @@ def execute(sql, args=None):
     sql = re.sub(r'\s+', ' ', sql)
     sql = sql.replace('?', '%s')
     logging.info('SQL: {} Args: {}'.format(sql, args))
-    DB['cursor'].execute(sql, args) if args else DB['cursor'].execute(sql)
+    try:
+        DB['cursor'].execute(sql, args) if args else DB['cursor'].execute(sql)
+    except (psycopg2.OperationalError, psycopg2.InterfaceError):
+        logging.info('Reconectando...')
+        connect()
+        DB['cursor'].execute(sql, args) if args else DB['cursor'].execute(sql)
     return DB['cursor']
 
 def close():
