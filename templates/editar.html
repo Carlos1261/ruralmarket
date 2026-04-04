@@ -3,7 +3,6 @@
 <a href="/anuncio/{{ a['id'] }}" class="back">← Voltar ao anúncio</a>
 
 <form method="POST" class="form" enctype="multipart/form-data">
-  <!-- Token CSRF obrigatório em todos os formulários POST -->
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
   <h1>Editar Anúncio</h1>
@@ -32,13 +31,70 @@
   <label>Contacto</label>
   <input type="text" name="contacto" value="{{ a['contacto'] }}" maxlength="80" required>
 
-  <label>Nova foto (deixa em branco para manter a atual)</label>
-  {% if a['foto'] %}
-    <img src="/static/fotos/{{ a['foto'] }}"
-         style="width:120px;height:80px;object-fit:cover;border-radius:6px;margin-bottom:0.3rem">
+  <!-- Fotos actuais -->
+  {% if fotos %}
+  <label>Fotos actuais (marca as que queres remover)</label>
+  <div class="foto-grid-edit">
+    {% for f in fotos %}
+    <div class="foto-edit-item">
+      <img src="/static/fotos/{{ f['nome'] }}" alt="Foto {{ loop.index }}">
+      <label class="foto-apagar-label">
+        <input type="checkbox" name="apagar_foto" value="{{ f['id'] }}">
+        <span>🗑 Remover</span>
+      </label>
+    </div>
+    {% endfor %}
+  </div>
   {% endif %}
-  <input type="file" name="foto" accept="image/jpeg,image/png,image/webp">
+
+  {% set total_fotos = fotos | length %}
+  {% if total_fotos < 15 %}
+  <label>Adicionar fotos (até {{ 15 - total_fotos }} mais)</label>
+  <input type="file" name="fotos" accept="image/jpeg,image/png,image/webp" multiple>
+  <p style="font-family:sans-serif;font-size:0.8rem;color:var(--texto-muted);margin-top:-0.5rem">
+    Máximo de 15 fotos por anúncio no total.
+  </p>
+  {% else %}
+  <p style="font-family:sans-serif;font-size:0.85rem;color:var(--texto-muted)">
+    Já tens 15 fotos. Remove algumas para poderes adicionar novas.
+  </p>
+  {% endif %}
 
   <button type="submit">✓ Guardar alterações</button>
 </form>
+
+<style>
+.foto-grid-edit {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.7rem;
+}
+.foto-edit-item {
+  border: 1.5px solid var(--border-suave);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--creme);
+}
+.foto-edit-item img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  display: block;
+}
+.foto-apagar-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--texto-muted);
+}
+.foto-apagar-label input { accent-color: #c84040; }
+.foto-edit-item:has(input:checked) {
+  border-color: #c84040;
+  opacity: 0.6;
+}
+</style>
 {% endblock %}

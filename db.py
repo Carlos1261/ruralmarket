@@ -63,15 +63,24 @@ def create_tables():
             data        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+    # Tabela de múltiplas fotos por anúncio
+    execute('''
+        CREATE TABLE IF NOT EXISTS fotos (
+            id         SERIAL PRIMARY KEY,
+            anuncio_id INTEGER NOT NULL REFERENCES anuncios(id) ON DELETE CASCADE,
+            nome       TEXT NOT NULL,
+            ordem      INTEGER DEFAULT 0
+        )
+    ''')
     DB['conn'].commit()
 
-    # Adiciona colunas novas em bases de dados existentes (sem falhar se já existirem)
-    for coluna in [
+    # Migrações para bases de dados existentes
+    for sql in [
         'ALTER TABLE anuncios ADD COLUMN foto TEXT',
         'ALTER TABLE anuncios ADD COLUMN usuario_id INTEGER REFERENCES usuarios(id) ON DELETE SET NULL',
     ]:
         try:
-            execute(coluna)
+            execute(sql)
             DB['conn'].commit()
         except Exception:
             DB['conn'].rollback()

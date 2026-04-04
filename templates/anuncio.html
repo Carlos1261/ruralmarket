@@ -4,9 +4,47 @@
 <a href="/anuncios" class="back">← Voltar</a>
 
 <div class="detalhe">
-  {% if a['foto'] %}
-    <img src="/static/fotos/{{ a['foto'] }}"
-         style="width:100%;max-height:380px;object-fit:cover;border-radius:8px;margin-bottom:1.2rem">
+
+  <!-- GALERIA DE FOTOS -->
+  {% if fotos %}
+    {% if fotos | length == 1 %}
+      <img src="/static/fotos/{{ fotos[0]['nome'] }}"
+           style="width:100%;max-height:400px;object-fit:cover;border-radius:10px;margin-bottom:1.2rem">
+    {% else %}
+      <!-- Carrossel simples -->
+      <div class="galeria" id="galeria">
+        <div class="galeria-principal">
+          <img id="fotoGrande" src="/static/fotos/{{ fotos[0]['nome'] }}" alt="Foto principal">
+          <button class="galeria-nav galeria-prev" onclick="moverFoto(-1)">‹</button>
+          <button class="galeria-nav galeria-next" onclick="moverFoto(1)">›</button>
+          <div class="galeria-contador" id="contador">1 / {{ fotos | length }}</div>
+        </div>
+        <div class="galeria-thumbs">
+          {% for f in fotos %}
+          <img src="/static/fotos/{{ f['nome'] }}"
+               class="thumb {% if loop.first %}thumb-ativa{% endif %}"
+               onclick="irParaFoto({{ loop.index0 }})"
+               alt="Foto {{ loop.index }}">
+          {% endfor %}
+        </div>
+      </div>
+
+      <script>
+        const fotos = {{ fotos | map(attribute='nome') | list | tojson }};
+        let atual = 0;
+        function irParaFoto(i) {
+          atual = i;
+          document.getElementById('fotoGrande').src = '/static/fotos/' + fotos[i];
+          document.getElementById('contador').textContent = (i + 1) + ' / ' + fotos.length;
+          document.querySelectorAll('.thumb').forEach((t, idx) => {
+            t.classList.toggle('thumb-ativa', idx === i);
+          });
+        }
+        function moverFoto(dir) {
+          irParaFoto((atual + dir + fotos.length) % fotos.length);
+        }
+      </script>
+    {% endif %}
   {% else %}
     <div class="detalhe-icon">
       {% if a['categoria'] == '🚜 Tratores e Máquinas' %}🚜
@@ -54,5 +92,73 @@
   </div>
   {% endif %}
 </div>
+
+<style>
+/* ── Galeria ── */
+.galeria { margin-bottom: 1.4rem; }
+
+.galeria-principal {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+  margin-bottom: 0.6rem;
+}
+.galeria-principal img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
+.galeria-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.18s;
+  z-index: 2;
+}
+.galeria-nav:hover { background: rgba(0,0,0,0.7); }
+.galeria-prev { left: 0.6rem; }
+.galeria-next { right: 0.6rem; }
+
+.galeria-contador {
+  position: absolute;
+  bottom: 0.6rem;
+  right: 0.8rem;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+}
+
+.galeria-thumbs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.thumb {
+  width: 72px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  opacity: 0.7;
+  transition: opacity 0.18s, border-color 0.18s;
+}
+.thumb:hover { opacity: 1; }
+.thumb-ativa { border-color: var(--verde-campo); opacity: 1; }
+</style>
 
 {% endblock %}
