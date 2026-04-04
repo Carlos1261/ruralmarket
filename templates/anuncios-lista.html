@@ -1,11 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
+
 <div class="page-header">
   <h1>Anúncios</h1>
   {% if user and user['aprovado'] %}
     <a href="/publicar" class="btn-pub">+ Publicar Anúncio</a>
   {% endif %}
 </div>
+
+<form method="GET" action="/anuncios" class="filtros">
+  <input type="text" name="q" value="{{ q }}" placeholder="🔍 Pesquisar...">
+  <select name="categoria">
+    <option value="">Todas as categorias</option>
+    <option {% if categoria == '🏠 Casas' %}selected{% endif %}>🏠 Casas</option>
+    <option {% if categoria == '🚗 Carros' %}selected{% endif %}>🚗 Carros</option>
+    <option {% if categoria == '🚜 Tratores e Máquinas' %}selected{% endif %}>🚜 Tratores e Máquinas</option>
+    <option {% if categoria == '🛒 Carretas e Reboques' %}selected{% endif %}>🛒 Carretas e Reboques</option>
+    <option {% if categoria == '🌾 Terrenos Agrícolas' %}selected{% endif %}>🌾 Terrenos Agrícolas</option>
+    <option {% if categoria == '🐄 Animais' %}selected{% endif %}>🐄 Animais</option>
+    <option {% if categoria == '🔧 Ferramentas' %}selected{% endif %}>🔧 Ferramentas</option>
+    <option {% if categoria == '🌱 Produtos Agrícolas' %}selected{% endif %}>🌱 Produtos Agrícolas</option>
+    <option {% if categoria == '📦 Outros' %}selected{% endif %}>📦 Outros</option>
+  </select>
+  <input type="number" name="preco_max" value="{{ preco_max }}" placeholder="Preço máx €">
+  <button type="submit">Filtrar</button>
+  {% if q or categoria or preco_max %}
+    <a href="/anuncios" class="btn-limpar">✕ Limpar</a>
+  {% endif %}
+</form>
+
 {% if anuncios %}
   <div class="grid">
     {% for a in anuncios %}
@@ -17,10 +40,14 @@
         </div>
       {% else %}
         <div class="card-icon">
-          {% if a['categoria'] == 'Gado' %}🐄
-          {% elif a['categoria'] == 'Máquinas' %}🚜
-          {% elif a['categoria'] == 'Terrenos' %}🌾
-          {% elif a['categoria'] == 'Animais' %}🐑
+          {% if a['categoria'] == '🚜 Tratores e Máquinas' %}🚜
+          {% elif a['categoria'] == '🏠 Casas' %}🏠
+          {% elif a['categoria'] == '🚗 Carros' %}🚗
+          {% elif a['categoria'] == '🛒 Carretas e Reboques' %}🛒
+          {% elif a['categoria'] == '🌾 Terrenos Agrícolas' %}🌾
+          {% elif a['categoria'] == '🐄 Animais' %}🐄
+          {% elif a['categoria'] == '🔧 Ferramentas' %}🔧
+          {% elif a['categoria'] == '🌱 Produtos Agrícolas' %}🌱
           {% else %}📦{% endif %}
         </div>
       {% endif %}
@@ -28,16 +55,19 @@
         <div class="card-cat">{{ a['categoria'] }}</div>
         <div class="card-title">{{ a['titulo'] }}</div>
         <div class="card-price">{{ a['preco'] }} €</div>
-        <div class="card-loc">{{ a['localizacao'] }}</div>
+        <div class="card-loc">📍 {{ a['localizacao'] }}</div>
       </div>
     </a>
     {% endfor %}
   </div>
 {% else %}
-  <p class="empty">Ainda não há anúncios.
-    {% if user and user['aprovado'] %}
+  <p class="empty">Nenhum anúncio encontrado.
+    {% if q or categoria or preco_max %}
+      <a href="/anuncios">Ver todos</a>
+    {% elif user and user['aprovado'] %}
       <a href="/publicar">Publica o primeiro!</a>
     {% endif %}
   </p>
 {% endif %}
+
 {% endblock %}

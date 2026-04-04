@@ -16,8 +16,28 @@ def index():
 
 @APP.route('/anuncios')
 def lista():
-    anuncios = db.execute('SELECT * FROM anuncios ORDER BY data DESC').fetchall()
-    return render_template('anuncios-lista.html', anuncios=anuncios, user=usuario_atual())
+    q         = request.args.get('q', '').strip()
+    categoria = request.args.get('categoria', '')
+    preco_max = request.args.get('preco_max', '')
+
+    sql  = 'SELECT * FROM anuncios WHERE 1=1'
+    args = []
+
+    if q:
+        sql += ' AND (titulo LIKE ? OR descricao LIKE ? OR localizacao LIKE ?)'
+        args += [f'%{q}%', f'%{q}%', f'%{q}%']
+    if categoria:
+        sql += ' AND categoria = ?'
+        args.append(categoria)
+    if preco_max:
+        sql += ' AND preco <= ?'
+        args.append(float(preco_max))
+
+    sql += ' ORDER BY data DESC'
+    anuncios = db.execute(sql, args if args else None).fetchall()
+    return render_template('anuncios-lista.html', anuncios=anuncios,
+                           user=usuario_atual(), q=q,
+                           categoria=categoria, preco_max=preco_max)
 
 import os
 from werkzeug.utils import secure_filename

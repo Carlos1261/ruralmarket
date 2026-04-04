@@ -552,3 +552,35 @@ footer {
   .form { padding: 1.3rem; }
   .footer-inner { flex-direction: column; gap: 0.4rem; text-align: center; }
 }
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+.filtros input[type=text],
+.filtros input[type=number],
+.filtros select {
+  padding: 0.55rem 0.9rem;
+  border: 1.5px solid #c5d4a8;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: #f8faf5;
+  font-family: sans-serif;
+  color: #1c2b0e;
+}
+.filtros input[type=text] { flex: 1; min-width: 180px; }
+.filtros button {
+  background: #5a8a2a; color: #fff;
+  border: none; padding: 0.55rem 1.2rem;
+  border-radius: 6px; font-size: 0.9rem;
+  font-weight: bold; cursor: pointer;
+  font-family: sans-serif;
+}
+.filtros button:hover { background: #3f6b1a; }
+.btn-limpar {
+  color: #c0392b; text-decoration: none;
+  font-size: 0.85rem; font-family: sans-serif;
+  padding: 0.55rem 0.5rem;
+}
