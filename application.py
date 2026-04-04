@@ -2,8 +2,7 @@ from flask import Flask, render_template, request, redirect, abort, session, fla
 import db
 
 APP = Flask(__name__)
-APP.secret_key = 'ruralmarket_secret_2024'
-
+APP.secret_key = os.environ.get('SECRET_KEY', 'ruralmarket_secret_2024')
 def usuario_atual():
     uid = session.get('user_id')
     if not uid:
