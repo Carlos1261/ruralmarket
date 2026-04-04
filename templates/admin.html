@@ -17,6 +17,7 @@
           <a href="/admin/revogar/{{ u['id'] }}" class="btn-revogar">Revogar</a>
         {% else %}
           <a href="/admin/aprovar/{{ u['id'] }}" class="btn-aprovar">Aprovar</a>
+	  <a href="/admin/borrar_usuario/{{ u['id'] }}" onclick="return confirm('Eliminar {{ u['nome'] }}?')" class="btn-revogar">🗑 Eliminar</a>
         {% endif %}
         {% if not u['admin'] %}
           <a href="/admin/tornar_admin/{{ u['id'] }}" class="btn-admin" style="margin-left:0.4rem">⭐ Admin</a>

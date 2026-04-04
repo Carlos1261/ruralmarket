@@ -410,3 +410,15 @@ def change_password():
         flash('Senha alterada com sucesso!')
         return redirect('/anuncios')
     return render_template('change_password.html', user=user)
+@APP.route('/admin/borrar_usuario/<int:id>')
+def borrar_usuario(id):
+    user = usuario_atual()
+    if not user or not user['admin']:
+        abort(403)
+    if user['id'] == id:
+        flash('Não podes eliminar a tua própria conta.')
+        return redirect('/admin')
+    db.execute('DELETE FROM usuarios WHERE id = ?', [id])
+    db.DB['conn'].commit()
+    flash('Utilizador eliminado.')
+    return redirect('/admin')
