@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Registro</h2>
+{% with msgs = get_flashed_messages() %}
+  {% if msgs %}<p style="color:red">{{ msgs[0] }}</p>{% endif %}
+{% endwith %}
+<form method="POST">
+  <input type="text" name="nome" placeholder="Nome" required><br>
+  <input type="email" name="email" placeholder="Email" required><br>
+  <input type="password" name="senha" placeholder="Senha" required><br>
+  <button type="submit">Registar</button>
+</form>
+<p>Já tens conta? <a href="/login">Entrar</a></p>
+{% endblock %}

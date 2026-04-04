@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h1>Anúncios</h1>
+  {% if user and user['aprovado'] %}
+    <a href="/publicar" class="btn-pub">+ Publicar Anúncio</a>
+  {% endif %}
+</div>
+{% if anuncios %}
+  <div class="grid">
+    {% for a in anuncios %}
+    <a href="/anuncio/{{ a['id'] }}" class="card">
+      {% if a['foto'] %}
+        <div class="card-icon" style="background:none;padding:0">
+          <img src="/static/fotos/{{ a['foto'] }}"
+               style="width:100%;height:100%;object-fit:cover">
+        </div>
+      {% else %}
+        <div class="card-icon">
+          {% if a['categoria'] == 'Gado' %}🐄
+          {% elif a['categoria'] == 'Máquinas' %}🚜
+          {% elif a['categoria'] == 'Terrenos' %}🌾
+          {% elif a['categoria'] == 'Animais' %}🐑
+          {% else %}📦{% endif %}
+        </div>
+      {% endif %}
+      <div class="card-body">
+        <div class="card-cat">{{ a['categoria'] }}</div>
+        <div class="card-title">{{ a['titulo'] }}</div>
+        <div class="card-price">{{ a['preco'] }} €</div>
+        <div class="card-loc">{{ a['localizacao'] }}</div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="empty">Ainda não há anúncios.
+    {% if user and user['aprovado'] %}
+      <a href="/publicar">Publica o primeiro!</a>
+    {% endif %}
+  </p>
+{% endif %}
+{% endblock %}

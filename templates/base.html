@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RuralMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+  <nav>
+    <a href="/anuncios" class="logo">
+      <span class="logo-leaf">🌿</span> Rural<strong>Market</strong>
+    </a>
+    <div class="nav-links">
+      {% if user %}
+        {% if user['aprovado'] %}
+          <a href="/publicar" class="btn-nav btn-pub">+ Publicar</a>
+        {% endif %}
+        {% if user['admin'] %}
+          <a href="/admin" class="btn-nav btn-admin">⚙ Admin</a>
+        {% endif %}
+        <span class="nav-user">{{ user['nome'].split()[0] }}</span>
+        <a href="/logout" class="btn-nav btn-out">Sair</a>
+      {% else %}
+        <a href="/login" class="btn-nav">Entrar</a>
+        <a href="/registro" class="btn-nav btn-pub">Registar</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- HERO com paisagem SVG -->
+  <div class="hero">
+    <svg class="paisagem" viewBox="0 0 1200 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
+
+      <!-- CÉU -->
+      <rect width="1200" height="260" fill="#b8d4e8"/>
+      <!-- nuvens -->
+      <ellipse cx="150" cy="55" rx="60" ry="22" fill="#e8f2f8" opacity="0.85"/>
+      <ellipse cx="190" cy="48" rx="45" ry="18" fill="#f0f6fa" opacity="0.9"/>
+      <ellipse cx="115" cy="60" rx="40" ry="16" fill="#e0eef5" opacity="0.8"/>
+
+      <ellipse cx="520" cy="40" rx="70" ry="24" fill="#e8f2f8" opacity="0.8"/>
+      <ellipse cx="565" cy="33" rx="50" ry="20" fill="#f0f6fa" opacity="0.85"/>
+      <ellipse cx="480" cy="46" rx="45" ry="18" fill="#e0eef5" opacity="0.75"/>
+
+      <ellipse cx="900" cy="50" rx="65" ry="22" fill="#e8f2f8" opacity="0.78"/>
+      <ellipse cx="945" cy="42" rx="48" ry="18" fill="#f0f6fa" opacity="0.85"/>
+
+      <!-- COLINAS FUNDO -->
+      <path d="M0,160 Q200,100 400,140 Q600,170 800,120 Q1000,80 1200,130 L1200,260 L0,260 Z" fill="#6b9c52" opacity="0.45"/>
+      <path d="M0,180 Q300,130 600,160 Q900,185 1200,150 L1200,260 L0,260 Z" fill="#5a8c3e" opacity="0.5"/>
+
+      <!-- CAMPO BASE -->
+      <rect x="0" y="195" width="1200" height="65" fill="#7ab648"/>
+      <!-- listras do campo lavrado -->
+      <path d="M0,202 Q150,198 300,203 Q450,208 600,202 Q750,196 900,203 Q1050,210 1200,202" stroke="#6aa038" stroke-width="2.5" fill="none" opacity="0.6"/>
+      <path d="M0,212 Q150,208 300,213 Q450,218 600,212 Q750,206 900,213 Q1050,220 1200,212" stroke="#6aa038" stroke-width="2.5" fill="none" opacity="0.6"/>
+      <path d="M0,222 Q150,218 300,223 Q450,228 600,222 Q750,216 900,223 Q1050,230 1200,222" stroke="#6aa038" stroke-width="2.5" fill="none" opacity="0.6"/>
+
+      <!-- ===================== CASA ===================== -->
+      <!-- parede -->
+      <rect x="60" y="148" width="100" height="62" fill="#e8d5b0" rx="2"/>
+      <!-- telhado -->
+      <polygon points="50,150 160,150 110,110" fill="#8b3a2a"/>
+      <!-- chaminé -->
+      <rect x="120" y="112" width="14" height="28" fill="#7a3020"/>
+      <rect x="117" y="110" width="20" height="6" fill="#6a2818"/>
+      <!-- fumo -->
+      <ellipse cx="127" cy="104" rx="5" ry="7" fill="#d0c8c0" opacity="0.5"/>
+      <ellipse cx="130" cy="96" rx="4" ry="6" fill="#d0c8c0" opacity="0.35"/>
+      <!-- porta -->
+      <rect x="96" y="178" width="28" height="32" fill="#7a5230" rx="3"/>
+      <rect x="96" y="178" width="28" height="32" fill="none" stroke="#5a3a1a" stroke-width="1.5" rx="3"/>
+      <circle cx="121" cy="194" r="2.5" fill="#c8a060"/>
+      <!-- janelas -->
+      <rect x="68" y="158" width="22" height="18" fill="#a8c8e0" rx="2"/>
+      <line x1="79" y1="158" x2="79" y2="176" stroke="#88a8c0" stroke-width="1"/>
+      <line x1="68" y1="167" x2="90" y2="167" stroke="#88a8c0" stroke-width="1"/>
+      <rect x="130" y="158" width="22" height="18" fill="#a8c8e0" rx="2"/>
+      <line x1="141" y1="158" x2="141" y2="176" stroke="#88a8c0" stroke-width="1"/>
+      <line x1="130" y1="167" x2="152" y2="167" stroke="#88a8c0" stroke-width="1"/>
+      <!-- cerca -->
+      <line x1="170" y1="180" x2="170" y2="210" stroke="#a07840" stroke-width="2.5"/>
+      <line x1="183" y1="178" x2="183" y2="210" stroke="#a07840" stroke-width="2.5"/>
+      <line x1="196" y1="178" x2="196" y2="210" stroke="#a07840" stroke-width="2.5"/>
+      <line x1="209" y1="180" x2="209" y2="210" stroke="#a07840" stroke-width="2.5"/>
+      <line x1="165" y1="187" x2="214" y2="187" stroke="#a07840" stroke-width="2"/>
+      <line x1="165" y1="200" x2="214" y2="200" stroke="#a07840" stroke-width="2"/>
+
+      <!-- ===================== ÁRVORE 1 (grande, perto da casa) ===================== -->
+      <rect x="215" y="160" width="10" height="50" fill="#7a5230" rx="2"/>
+      <ellipse cx="220" cy="148" rx="30" ry="38" fill="#2d6e1a"/>
+      <ellipse cx="208" cy="155" rx="20" ry="28" fill="#3a8022"/>
+      <ellipse cx="232" cy="158" rx="18" ry="25" fill="#357520"/>
+      <ellipse cx="220" cy="135" rx="22" ry="28" fill="#45922e"/>
+
+      <!-- ===================== ÁRVORE 2 ===================== -->
+      <rect x="278" y="168" width="8" height="42" fill="#7a5230" rx="2"/>
+      <ellipse cx="282" cy="157" rx="24" ry="30" fill="#2d6e1a"/>
+      <ellipse cx="270" cy="162" rx="16" ry="22" fill="#3a8022"/>
+      <ellipse cx="294" cy="163" rx="15" ry="20" fill="#357520"/>
+      <ellipse cx="282" cy="146" rx="18" ry="24" fill="#45922e"/>
+
+      <!-- ===================== ÁRVORE 3 (pinheiro) ===================== -->
+      <rect x="348" y="165" width="8" height="45" fill="#6b4520"/>
+      <polygon points="352,108 330,175 374,175" fill="#1e5c12"/>
+      <polygon points="352,120 333,178 371,178" fill="#256b17"/>
+      <polygon points="352,135 335,182 369,182" fill="#2d7a1c"/>
+
+      <!-- ===================== TRATOR ===================== -->
+      <!-- corpo principal -->
+      <rect x="430" y="175" width="90" height="42" fill="#c8380a" rx="5"/>
+      <!-- capô -->
+      <rect x="480" y="168" width="50" height="30" fill="#b52e06" rx="4"/>
+      <!-- cabine -->
+      <rect x="432" y="155" width="55" height="38" fill="#d44010" rx="3"/>
+      <rect x="436" y="158" width="47" height="28" fill="#1a3a5c" rx="2" opacity="0.7"/>
+      <!-- tubo de escape -->
+      <rect x="520" y="148" width="6" height="24" fill="#555" rx="2"/>
+      <ellipse cx="523" cy="147" rx="6" ry="3" fill="#333"/>
+      <!-- roda grande traseira -->
+      <circle cx="460" cy="218" r="28" fill="#222"/>
+      <circle cx="460" cy="218" r="22" fill="#333"/>
+      <circle cx="460" cy="218" r="14" fill="#555"/>
+      <circle cx="460" cy="218" r="6" fill="#888"/>
+      <!-- aros da roda -->
+      <line x1="460" y1="196" x2="460" y2="240" stroke="#666" stroke-width="2"/>
+      <line x1="438" y1="218" x2="482" y2="218" stroke="#666" stroke-width="2"/>
+      <line x1="444" y1="203" x2="476" y2="233" stroke="#666" stroke-width="2"/>
+      <line x1="476" y1="203" x2="444" y2="233" stroke="#666" stroke-width="2"/>
+      <!-- roda pequena dianteira -->
+      <circle cx="510" cy="218" r="16" fill="#222"/>
+      <circle cx="510" cy="218" r="12" fill="#333"/>
+      <circle cx="510" cy="218" r="7" fill="#555"/>
+      <circle cx="510" cy="218" r="3" fill="#888"/>
+      <!-- exaustor fumo -->
+      <ellipse cx="523" cy="143" rx="5" ry="4" fill="#888" opacity="0.4"/>
+      <ellipse cx="525" cy="136" rx="4" ry="4" fill="#999" opacity="0.3"/>
+      <!-- farol -->
+      <ellipse cx="529" cy="180" rx="6" ry="5" fill="#f8e060" opacity="0.9"/>
+      <ellipse cx="529" cy="180" rx="4" ry="3.5" fill="#fffaaa"/>
+
+      <!-- ===================== CARROÇA ===================== -->
+      <!-- corpo da carroça -->
+      <rect x="590" y="188" width="110" height="30" fill="#c8a050" rx="3"/>
+      <!-- lateral da carroça -->
+      <rect x="588" y="183" width="5" height="35" fill="#a07830" rx="2"/>
+      <rect x="701" y="183" width="5" height="35" fill="#a07830" rx="2"/>
+      <!-- tábuas interiores -->
+      <line x1="590" y1="193" x2="700" y2="193" stroke="#b89040" stroke-width="1.5"/>
+      <line x1="590" y1="200" x2="700" y2="200" stroke="#b89040" stroke-width="1.5"/>
+      <line x1="590" y1="207" x2="700" y2="207" stroke="#b89040" stroke-width="1.5"/>
+      <!-- varais -->
+      <rect x="700" y="193" width="45" height="5" fill="#8b6a28" rx="2"/>
+      <!-- carga (fardos) -->
+      <rect x="600" y="170" width="28" height="20" fill="#c8a838" rx="2"/>
+      <line x1="600" y1="180" x2="628" y2="180" stroke="#a08828" stroke-width="1.5"/>
+      <line x1="614" y1="170" x2="614" y2="190" stroke="#a08828" stroke-width="1.5"/>
+      <rect x="634" y="172" width="28" height="18" fill="#d4b040" rx="2"/>
+      <line x1="634" y1="181" x2="662" y2="181" stroke="#a08828" stroke-width="1.5"/>
+      <line x1="648" y1="172" x2="648" y2="190" stroke="#a08828" stroke-width="1.5"/>
+      <rect x="665" y="174" width="26" height="16" fill="#c8a838" rx="2"/>
+      <!-- rodas da carroça -->
+      <circle cx="615" cy="220" r="18" fill="#5a3a10"/>
+      <circle cx="615" cy="220" r="13" fill="#6b4520"/>
+      <circle cx="615" cy="220" r="6" fill="#8b6530"/>
+      <line x1="615" y1="202" x2="615" y2="238" stroke="#4a2a08" stroke-width="2"/>
+      <line x1="597" y1="220" x2="633" y2="220" stroke="#4a2a08" stroke-width="2"/>
+      <line x1="602" y1="207" x2="628" y2="233" stroke="#4a2a08" stroke-width="2"/>
+      <line x1="628" y1="207" x2="602" y2="233" stroke="#4a2a08" stroke-width="2"/>
+
+      <circle cx="684" cy="220" r="18" fill="#5a3a10"/>
+      <circle cx="684" cy="220" r="13" fill="#6b4520"/>
+      <circle cx="684" cy="220" r="6" fill="#8b6530"/>
+      <line x1="684" y1="202" x2="684" y2="238" stroke="#4a2a08" stroke-width="2"/>
+      <line x1="666" y1="220" x2="702" y2="220" stroke="#4a2a08" stroke-width="2"/>
+      <line x1="671" y1="207" x2="697" y2="233" stroke="#4a2a08" stroke-width="2"/>
+      <line x1="697" y1="207" x2="671" y2="233" stroke="#4a2a08" stroke-width="2"/>
+
+      <!-- ===================== ÁRVORE 4 (após carroça) ===================== -->
+      <rect x="758" y="162" width="9" height="48" fill="#7a5230" rx="2"/>
+      <ellipse cx="762" cy="150" rx="26" ry="32" fill="#2d6e1a"/>
+      <ellipse cx="750" cy="156" rx="18" ry="24" fill="#3a8022"/>
+      <ellipse cx="774" cy="158" rx="17" ry="22" fill="#357520"/>
+      <ellipse cx="762" cy="140" rx="20" ry="26" fill="#45922e"/>
+
+      <!-- ===================== ÁRVORE 5 (pinheiro 2) ===================== -->
+      <rect x="820" y="158" width="8" height="52" fill="#6b4520"/>
+      <polygon points="824,98 800,168 848,168" fill="#1e5c12"/>
+      <polygon points="824,112 802,172 846,172" fill="#256b17"/>
+      <polygon points="824,128 804,176 844,176" fill="#2d7a1c"/>
+
+      <!-- ===================== ÁRVORE 6 ===================== -->
+      <rect x="875" y="165" width="9" height="45" fill="#7a5230" rx="2"/>
+      <ellipse cx="879" cy="153" rx="28" ry="34" fill="#2d6e1a"/>
+      <ellipse cx="866" cy="160" rx="19" ry="25" fill="#3a8022"/>
+      <ellipse cx="892" cy="162" rx="18" ry="23" fill="#357520"/>
+      <ellipse cx="879" cy="142" rx="22" ry="28" fill="#45922e"/>
+
+      <!-- ===================== MONTANHA / CELEIRO fundo ===================== -->
+      <polygon points="940,130 980,195 900,195" fill="#8b3a2a" opacity="0.9"/>
+      <polygon points="940,130 980,195 940,195" fill="#7a3020" opacity="0.9"/>
+      <!-- porta celeiro -->
+      <rect x="927" y="168" width="26" height="27" fill="#5a2010" rx="1"/>
+      <path d="M927,168 Q940,160 953,168" fill="#5a2010"/>
+
+      <!-- ===================== ÁRVORE 7 ===================== -->
+      <rect x="1000" y="163" width="9" height="47" fill="#7a5230" rx="2"/>
+      <ellipse cx="1004" cy="150" rx="27" ry="34" fill="#2d6e1a"/>
+      <ellipse cx="991" cy="157" rx="18" ry="24" fill="#3a8022"/>
+      <ellipse cx="1017" cy="159" rx="17" ry="22" fill="#357520"/>
+
+      <!-- ===================== ÁRVORE 8 (pinheiro 3) ===================== -->
+      <rect x="1065" y="160" width="8" height="50" fill="#6b4520"/>
+      <polygon points="1069,100 1046,170 1092,170" fill="#1e5c12"/>
+      <polygon points="1069,115 1048,174 1090,174" fill="#256b17"/>
+      <polygon points="1069,130 1050,178 1088,178" fill="#2d7a1c"/>
+
+      <!-- ===================== ÁRVORE 9 ===================== -->
+      <rect x="1120" y="168" width="9" height="42" fill="#7a5230" rx="2"/>
+      <ellipse cx="1124" cy="156" rx="25" ry="30" fill="#2d6e1a"/>
+      <ellipse cx="1113" cy="162" rx="17" ry="23" fill="#3a8022"/>
+      <ellipse cx="1135" cy="164" rx="16" ry="21" fill="#357520"/>
+
+      <!-- CHÃO linha de sombra -->
+      <rect x="0" y="193" width="1200" height="4" fill="#5a8a28" opacity="0.5"/>
+
+      <!-- TEXTO HERO -->
+      <text x="600" y="80" text-anchor="middle" font-family="'Playfair Display', serif" font-size="36" font-weight="700" fill="#1a3810" opacity="0.88">RuralMarket</text>
+      <text x="600" y="108" text-anchor="middle" font-family="'Lora', serif" font-size="15" fill="#2a5018" opacity="0.8">Tudo o que precisa à distância de um clique</text>
+
+    </svg>
+  </div>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>🌾 RuralMarket — O mercado do campo</span>
+      <span>© 2025</span>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Panel Admin</h2>
+<table border="1" cellpadding="6">
+  <tr>
+    <th>Nome</th><th>Email</th><th>Data</th><th>Estado</th><th>Ação</th>
+  </tr>
+  {% for u in usuarios %}
+  {% if not u['admin'] %}
+  <tr>
+    <td>{{ u['nome'] }}</td>
+    <td>{{ u['email'] }}</td>
+    <td>{{ u['data'] }}</td>
+    <td>{{ 'Aprovado ✅' if u['aprovado'] else 'Pendente ⏳' }}</td>
+  <td>
+  {% if u['aprovado'] %}
+    <a href="/admin/revogar/{{ u['id'] }}" class="btn-revogar">Revogar</a>
+  {% else %}
+    <a href="/admin/aprovar/{{ u['id'] }}" class="btn-aprovar">Aprovar</a>
+  {% endif %}
+  {% if not u['admin'] %}
+    <a href="/admin/tornar_admin/{{ u['id'] }}" class="btn-admin" style="margin-left:0.4rem">⭐ Admin</a>
+  {% else %}
+    <span style="font-family:sans-serif;font-size:0.78rem;color:#7a5230">⭐ Admin</span>
+  {% endif %}
+</td>
+  </tr>
+  {% endif %}
+  {% endfor %}
+</table>
+{% endblock %}
