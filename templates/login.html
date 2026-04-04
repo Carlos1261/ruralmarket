@@ -4,10 +4,15 @@
 {% with msgs = get_flashed_messages() %}
   {% if msgs %}<p style="color:red">{{ msgs[0] }}</p>{% endif %}
 {% endwith %}
-<form method="POST">
-  <input type="email" name="email" placeholder="Email" required><br>
-  <input type="password" name="senha" placeholder="Senha" required><br>
+<form method="POST" class="form">
+  <label>Email ou nome de utilizador</label>
+  <input type="text" name="email" placeholder="Email ou nome de utilizador" required>
+  <label>Senha</label>
+  <input type="password" name="senha" placeholder="Senha" required>
   <button type="submit">Entrar</button>
 </form>
-<p>Ainda não tens conta? <a href="/registro">Registar</a></p>
+<p style="margin-top:1rem;font-family:sans-serif;font-size:0.9rem">
+  Ainda não tens conta? <a href="/registro" style="color:#5a8a2a">Registar</a>
+</p>
 {% endblock %}
+

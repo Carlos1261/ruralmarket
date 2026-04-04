@@ -115,8 +115,10 @@ def login():
         email = request.form['email']
         senha = db.hash_senha(request.form['senha'])
         user = db.execute(
-            'SELECT * FROM usuarios WHERE email = ? AND senha = ?', [email, senha]
-        ).fetchone()
+    '''SELECT * FROM usuarios 
+       WHERE (email = %s OR nome = %s) AND senha = %s''',
+    [email, email, senha]
+).fetchone()
         if not user:
             flash('Email ou senha incorretos.')
             return render_template('login.html')
