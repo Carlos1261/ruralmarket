@@ -5,6 +5,7 @@
   {% if msgs %}<p style="color:red">{{ msgs[0] }}</p>{% endif %}
 {% endwith %}
 <form method="POST" class="form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <label>Email ou nome de utilizador</label>
   <input type="text" name="email" placeholder="Email ou nome de utilizador" required>
   <label>Senha</label>

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <form method="POST" class="form" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <h1>Publicar Anúncio</h1>
   <label>Categoria</label>
   <select name="categoria" required>
