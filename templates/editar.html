@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<a href="/anuncio/{{ a['id'] }}" class="back">← Voltar ao anúncio</a>
+
+<form method="POST" class="form" enctype="multipart/form-data">
+  <!-- Token CSRF obrigatório em todos os formulários POST -->
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+  <h1>Editar Anúncio</h1>
+  <p class="form-desc">Altera os campos que precisares.</p>
+
+  <label>Categoria</label>
+  <select name="categoria" required>
+    {% for cat in ['🏠 Casas','🚗 Carros','🚜 Tratores e Máquinas','🛒 Carretas e Reboques',
+                   '🌾 Terrenos Agrícolas','🐄 Animais','🔧 Ferramentas','🌱 Produtos Agrícolas','📦 Outros'] %}
+    <option {% if a['categoria'] == cat %}selected{% endif %}>{{ cat }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Título</label>
+  <input type="text" name="titulo" value="{{ a['titulo'] }}" maxlength="120" required>
+
+  <label>Descrição</label>
+  <textarea name="descricao" maxlength="2000">{{ a['descricao'] }}</textarea>
+
+  <label>Preço (€)</label>
+  <input type="number" name="preco" value="{{ a['preco'] }}" step="0.01" min="0" required>
+
+  <label>Localização</label>
+  <input type="text" name="localizacao" value="{{ a['localizacao'] }}" maxlength="120" required>
+
+  <label>Contacto</label>
+  <input type="text" name="contacto" value="{{ a['contacto'] }}" maxlength="80" required>
+
+  <label>Nova foto (deixa em branco para manter a atual)</label>
+  {% if a['foto'] %}
+    <img src="/static/fotos/{{ a['foto'] }}"
+         style="width:120px;height:80px;object-fit:cover;border-radius:6px;margin-bottom:0.3rem">
+  {% endif %}
+  <input type="file" name="foto" accept="image/jpeg,image/png,image/webp">
+
+  <button type="submit">✓ Guardar alterações</button>
+</form>
+{% endblock %}

@@ -52,6 +52,7 @@ def create_tables():
     execute('''
         CREATE TABLE IF NOT EXISTS anuncios (
             id          SERIAL PRIMARY KEY,
+            usuario_id  INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
             titulo      TEXT NOT NULL,
             descricao   TEXT,
             preco       REAL,
@@ -63,3 +64,14 @@ def create_tables():
         )
     ''')
     DB['conn'].commit()
+
+    # Adiciona colunas novas em bases de dados existentes (sem falhar se já existirem)
+    for coluna in [
+        'ALTER TABLE anuncios ADD COLUMN foto TEXT',
+        'ALTER TABLE anuncios ADD COLUMN usuario_id INTEGER REFERENCES usuarios(id) ON DELETE SET NULL',
+    ]:
+        try:
+            execute(coluna)
+            DB['conn'].commit()
+        except Exception:
+            DB['conn'].rollback()
