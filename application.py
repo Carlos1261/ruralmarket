@@ -143,3 +143,9 @@ def tornar_admin(id):
     db.execute('UPDATE usuarios SET admin = 1, aprovado = 1 WHERE id = ?', [id])
     db.DB['conn'].commit()
     return redirect('/admin')
+
+@APP.route('/admin/borrar/<int:id>')
+def borrar(id):
+    db.execute('DELETE FROM anuncios WHERE id = ?', [id])
+    db.DB['conn'].commit()
+    return redirect('/anuncios')
