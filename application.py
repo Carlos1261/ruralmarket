@@ -94,7 +94,7 @@ def registro():
             flash('Este email ja esta registado.')
             return render_template('registro.html')
 
-        total = db.execute('SELECT COUNT(*) FROM usuarios').fetchone()[0]
+        total = db.execute('SELECT COUNT(*) FROM usuarios').fetchone()['count']
         es_admin = 1 if total == 0 else 0
 
         db.execute(
