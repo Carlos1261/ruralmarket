@@ -1,128 +1,44 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: sans-serif;
-  background: #f5f0e8;
-  color: #1a1208;
-}
-
-nav {
-  background: #1a1208;
-  padding: 1rem 2rem;
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-}
-nav a { color: #fff; text-decoration: none; font-size: 1rem; }
-
-main { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.btn-pub {
-  background: #d4500a;
-  color: #fff;
-  padding: 0.5rem 1.2rem;
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1rem;
-}
-
-.card {
-  background: #fff;
-  border: 1px solid #d9ceb8;
-  border-radius: 8px;
-  padding: 1.2rem;
-  text-decoration: none;
-  color: inherit;
-  display: block;
-  transition: box-shadow .2s;
-}
-.card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.1); }
-.card-cat { font-size: 0.75rem; color: #888; text-transform: uppercase; margin-bottom: 0.3rem; }
-.card-title { font-size: 1rem; font-weight: bold; margin-bottom: 0.5rem; }
-.card-price { color: #d4500a; font-size: 1.1rem; font-weight: bold; margin-bottom: 0.4rem; }
-.card-meta { font-size: 0.8rem; color: #666; }
-
-.empty { color: #888; margin-top: 2rem; }
-.empty a { color: #d4500a; }
-
-/* FORM */
-.form {
-  max-width: 520px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-.form label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: #666; }
-.form input,
-.form select,
-.form textarea {
-  padding: 0.65rem 0.9rem;
-  border: 1.5px solid #d9ceb8;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  background: #fdfaf4;
-  font-family: sans-serif;
-}
-.form textarea { min-height: 100px; resize: vertical; }
-.form button {
-  background: #2a6b3c;
-  color: #fff;
-  border: none;
-  padding: 0.8rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 0.5rem;
-}
-.form button:hover { background: #1f5230; }
-
-/* DETALHE */
-.back { color: #d4500a; text-decoration: none; display: inline-block; margin-bottom: 1rem; }
-.detalhe { background: #fff; border: 1px solid #d9ceb8; border-radius: 10px; padding: 2rem; max-width: 680px; }
-.detalhe-cat { font-size: 0.75rem; color: #888; text-transform: uppercase; margin-bottom: 0.5rem; }
-.detalhe h1 { font-size: 1.8rem; margin-bottom: 0.75rem; }
-.detalhe-price { color: #d4500a; font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; }
-.detalhe p { color: #555; line-height: 1.6; margin-bottom: 1rem; }
-.detalhe-meta { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.9rem; color: #666; }
 {% extends "base.html" %}
 {% block content %}
+
 <a href="/anuncios" class="back">← Voltar</a>
+
 <div class="detalhe">
   {% if a['foto'] %}
     <img src="/static/fotos/{{ a['foto'] }}"
          style="width:100%;max-height:380px;object-fit:cover;border-radius:8px;margin-bottom:1.2rem">
   {% else %}
     <div class="detalhe-icon">
-      {% if a['categoria'] == 'Gado' %}🐄
-      {% elif a['categoria'] == 'Máquinas' %}🚜
-      {% elif a['categoria'] == 'Terrenos' %}🌾
-      {% elif a['categoria'] == 'Animais' %}🐑
+      {% if a['categoria'] == '🚜 Tratores e Máquinas' %}🚜
+      {% elif a['categoria'] == '🏠 Casas' %}🏠
+      {% elif a['categoria'] == '🚗 Carros' %}🚗
+      {% elif a['categoria'] == '🛒 Carretas e Reboques' %}🛒
+      {% elif a['categoria'] == '🌾 Terrenos Agrícolas' %}🌾
+      {% elif a['categoria'] == '🐄 Animais' %}🐄
+      {% elif a['categoria'] == '🔧 Ferramentas' %}🔧
+      {% elif a['categoria'] == '🌱 Produtos Agrícolas' %}🌱
       {% else %}📦{% endif %}
     </div>
   {% endif %}
+
   <div class="detalhe-cat">{{ a['categoria'] }}</div>
   <h1>{{ a['titulo'] }}</h1>
   <div class="detalhe-price">{{ a['preco'] }} €</div>
   <p>{{ a['descricao'] }}</p>
+
   <div class="detalhe-meta">
     <span>📍 {{ a['localizacao'] }}</span>
     <span>📞 {{ a['contacto'] }}</span>
     <span>🗓 {{ a['data'] }}</span>
   </div>
+
+  {% if user and user['admin'] %}
+    <a href="/admin/borrar/{{ a['id'] }}"
+       onclick="return confirm('Tens a certeza?')"
+       style="display:inline-block;margin-top:1.5rem;background:#c0392b;color:#fff;padding:0.5rem 1.2rem;border-radius:4px;text-decoration:none;font-family:sans-serif;font-size:0.875rem;">
+      🗑 Eliminar anúncio
+    </a>
+  {% endif %}
 </div>
+
 {% endblock %}
