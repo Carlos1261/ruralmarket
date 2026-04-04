@@ -171,3 +171,26 @@ def borrar(id):
     db.execute('DELETE FROM anuncios WHERE id = ?', [id])
     db.DB['conn'].commit()
     return redirect('/anuncios')
+@APP.route('/change-password', methods=['GET', 'POST'])
+def change_password():
+    user = usuario_atual()
+    if not user:
+        return redirect('/login')
+    if request.method == 'POST':
+        senha_atual = db.hash_senha(request.form['senha_atual'])
+        nova_senha  = db.hash_senha(request.form['nova_senha'])
+        confirmar   = db.hash_senha(request.form['confirmar'])
+
+        if senha_atual != user['senha']:
+            flash('Senha atual incorreta.')
+            return render_template('change_password.html', user=user)
+        if nova_senha != confirmar:
+            flash('As novas senhas não coincidem.')
+            return render_template('change_password.html', user=user)
+
+        db.execute('UPDATE usuarios SET senha = %s WHERE id = %s',
+                   [nova_senha, user['id']])
+        db.DB['conn'].commit()
+        flash('Senha alterada com sucesso!')
+        return redirect('/anuncios')
+    return render_template('change_password.html', user=user)
