@@ -5,6 +5,10 @@ import secrets
 import re
 
 APP = Flask(__name__)
+@APP.before_request
+def before_request():
+    if 'conn' not in db.DB:
+        db.connect()
 APP.secret_key = os.environ.get('SECRET_KEY', 'ruralmarket_secret_2024')
 
 UPLOAD_FOLDER    = 'static/fotos'
