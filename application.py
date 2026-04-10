@@ -437,3 +437,14 @@ def change_password():
         flash('Senha alterada com sucesso!')
         return redirect('/anuncios')
     return render_template('change_password.html', user=user)
+@APP.route('/sitemap.xml')
+def sitemap():
+    anuncios = db.execute('SELECT id, data FROM anuncios ORDER BY data DESC').fetchall()
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    xml += '<url><loc>https://ruralmarket-cagl.onrender.com/anuncios</loc></url>\n'
+    for a in anuncios:
+        xml += f'<url><loc>https://ruralmarket-cagl.onrender.com/anuncio/{a["id"]}</loc></url>\n'
+    xml += '</urlset>'
+    from flask import Response
+    return Response(xml, mimetype='application/xml')
