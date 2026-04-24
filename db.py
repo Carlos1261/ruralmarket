@@ -1,58 +1,37 @@
 import logging
-import os
 import re
-import hashlib
 import psycopg2
 import psycopg2.extras
+import hashlib
 
-global DB
 DB = dict()
+
+DATABASE_URL = 'postgresql://postgres:BetoRural202623@db.qsgylbdpmhdlnetqvwwn.supabase.co:5432/postgres'
 
 def connect():
     global DB
-    url = os.environ.get('DATABASE_URL')
-    c = psycopg2.connect(url)
+    c = psycopg2.connect(DATABASE_URL)
     c.autocommit = False
     DB['conn'] = c
     DB['cursor'] = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    logging.info('Connected to PostgreSQL')
+    logging.info('Connected to database')
 
 def execute(sql, args=None):
     global DB
+    # SQLite usa ? — PostgreSQL usa %s
+    sql = re.sub(r'\?', '%s', sql)
     sql = re.sub(r'\s+', ' ', sql)
-    sql = sql.replace('?', '%s')
     logging.info('SQL: {} Args: {}'.format(sql, args))
-    try:
-        DB['cursor'].execute(sql, args) if args else DB['cursor'].execute(sql)
-    except (psycopg2.OperationalError, psycopg2.InterfaceError):
-        logging.info('Reconectando...')
-        connect()
-        DB['cursor'].execute(sql, args) if args else DB['cursor'].execute(sql)
+    if args is not None:
+        DB['cursor'].execute(sql, args)
+    else:
+        DB['cursor'].execute(sql)
     return DB['cursor']
-
-def close():
-    global DB
-    DB['conn'].close()
-
-def hash_senha(senha):
-    return hashlib.sha256(senha.encode()).hexdigest()
 
 def create_tables():
     execute('''
-        CREATE TABLE IF NOT EXISTS usuarios (
-            id       SERIAL PRIMARY KEY,
-            nome     TEXT NOT NULL,
-            email    TEXT UNIQUE NOT NULL,
-            senha    TEXT NOT NULL,
-            aprovado INTEGER DEFAULT 0,
-            admin    INTEGER DEFAULT 0,
-            data     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    execute('''
         CREATE TABLE IF NOT EXISTS anuncios (
             id          SERIAL PRIMARY KEY,
-            usuario_id  INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
             titulo      TEXT NOT NULL,
             descricao   TEXT,
             preco       REAL,
@@ -63,24 +42,22 @@ def create_tables():
             data        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
-    # Tabela de múltiplas fotos por anúncio
     execute('''
-        CREATE TABLE IF NOT EXISTS fotos (
-            id         SERIAL PRIMARY KEY,
-            anuncio_id INTEGER NOT NULL REFERENCES anuncios(id) ON DELETE CASCADE,
-            nome       TEXT NOT NULL,
-            ordem      INTEGER DEFAULT 0
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id       SERIAL PRIMARY KEY,
+            nome     TEXT NOT NULL,
+            email    TEXT NOT NULL UNIQUE,
+            senha    TEXT NOT NULL,
+            aprovado INTEGER DEFAULT 0,
+            admin    INTEGER DEFAULT 0,
+            data     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
     DB['conn'].commit()
 
-    # Migrações para bases de dados existentes
-    for sql in [
-        'ALTER TABLE anuncios ADD COLUMN foto TEXT',
-        'ALTER TABLE anuncios ADD COLUMN usuario_id INTEGER REFERENCES usuarios(id) ON DELETE SET NULL',
-    ]:
-        try:
-            execute(sql)
-            DB['conn'].commit()
-        except Exception:
-            DB['conn'].rollback()
+def hash_senha(senha):
+    return hashlib.sha256(senha.encode()).hexdigest()
+
+def close():
+    global DB
+    DB['conn'].close()
