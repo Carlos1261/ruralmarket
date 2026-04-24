@@ -8,20 +8,20 @@
   <!-- GALERIA DE FOTOS -->
   {% if fotos %}
     {% if fotos | length == 1 %}
-      <img src="/static/fotos/{{ fotos[0]['nome'] }}"
+      <img src="{{ fotos[0]['nome'] }}"
            style="width:100%;max-height:400px;object-fit:cover;border-radius:10px;margin-bottom:1.2rem">
     {% else %}
       <!-- Carrossel simples -->
       <div class="galeria" id="galeria">
         <div class="galeria-principal">
-          <img id="fotoGrande" src="/static/fotos/{{ fotos[0]['nome'] }}" alt="Foto principal">
+          <img id="fotoGrande" src="{{ fotos[0]['nome'] }}" alt="Foto principal">
           <button class="galeria-nav galeria-prev" onclick="moverFoto(-1)">‹</button>
           <button class="galeria-nav galeria-next" onclick="moverFoto(1)">›</button>
           <div class="galeria-contador" id="contador">1 / {{ fotos | length }}</div>
         </div>
         <div class="galeria-thumbs">
           {% for f in fotos %}
-          <img src="/static/fotos/{{ f['nome'] }}"
+          <img src="{{ f['nome'] }}"
                class="thumb {% if loop.first %}thumb-ativa{% endif %}"
                onclick="irParaFoto({{ loop.index0 }})"
                alt="Foto {{ loop.index }}">
@@ -34,7 +34,7 @@
         let atual = 0;
         function irParaFoto(i) {
           atual = i;
-          document.getElementById('fotoGrande').src = '/static/fotos/' + fotos[i];
+          document.getElementById('fotoGrande').src = '' + fotos[i];
           document.getElementById('contador').textContent = (i + 1) + ' / ' + fotos.length;
           document.querySelectorAll('.thumb').forEach((t, idx) => {
             t.classList.toggle('thumb-ativa', idx === i);

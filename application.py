@@ -1,6 +1,16 @@
 from flask import Flask, render_template, request, redirect, abort, session, flash
 import db
 import os
+
+import cloudinary
+import cloudinary.uploader
+
+cloudinary.config(
+    cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key    = os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret = os.environ.get('CLOUDINARY_API_SECRET')
+)
+
 import secrets
 import re
 
@@ -99,13 +109,11 @@ def guardar_foto(f):
         return None
     f.stream.seek(0, 2)
     if f.stream.tell() > MAX_UPLOAD_BYTES:
-        flash('Cada imagem não pode ter mais de 5 MB.')
-        return None
+      flash('Cada imagem não pode ter mais de 5 MB.')
+      return None
     f.stream.seek(0)
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    nome = f'{secrets.token_hex(16)}.{ext}'
-    f.save(os.path.join(UPLOAD_FOLDER, nome))
-    return nome
+    resultado = cloudinary.uploader.upload(f, folder='ruralmarket')
+    return resultado['secure_url']
 
 def guardar_fotos_anuncio(anuncio_id, ficheiros, ordem_inicio=0):
     """Guarda múltiplas fotos e insere-as na tabela fotos."""
