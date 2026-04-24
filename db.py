@@ -3,10 +3,11 @@ import re
 import psycopg2
 import psycopg2.extras
 import hashlib
+import os
 
 DB = dict()
 
-DATABASE_URL = 'postgresql://postgres:BetoRural202623@db.qsgylbdpmhdlnetqvwwn.supabase.co:5432/postgres'
+DATABASE_URL = os.environ.get('DATABASE_URL', '')
 
 def connect():
     global DB
