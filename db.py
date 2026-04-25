@@ -1,17 +1,24 @@
 import logging
 import re
+import os
+from urllib.parse import urlparse
 import psycopg2
 import psycopg2.extras
 import hashlib
-import os
 
 DB = dict()
 
-DATABASE_URL = os.environ.get('DATABASE_URL', '')
-
 def connect():
     global DB
-    c = psycopg2.connect(DATABASE_URL)
+    url = urlparse(os.environ.get('DATABASE_URL', ''))
+    c = psycopg2.connect(
+        host=url.hostname,
+        port=url.port,
+        dbname=url.path[1:],
+        user=url.username,
+        password=url.password,
+        sslmode='require'
+    )
     c.autocommit = False
     DB['conn'] = c
     DB['cursor'] = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -20,7 +27,6 @@ def connect():
 
 def execute(sql, args=None):
     global DB
-    # SQLite usa ? — PostgreSQL usa %s
     sql = re.sub(r'\?', '%s', sql)
     sql = re.sub(r'\s+', ' ', sql)
     logging.info('SQL: {} Args: {}'.format(sql, args))
