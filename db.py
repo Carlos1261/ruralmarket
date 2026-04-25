@@ -4,7 +4,40 @@ import psycopg2
 import psycopg2.extras
 import hashlib
 import os
+from urllib.parse import urlparse
 
+def connect():
+    global DB
+    url = urlparse(os.environ.get('DATABASE_URL', ''))
+    c = psycopg2.connect(
+        host=url.hostname,
+        port=url.port,
+        dbname=url.path[1:],
+        user=url.username,
+        password=url.password,
+        sslmode='require'
+    )
+    c.autocommit = False
+    DB['conn'] = c
+    DB['cursor'] = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    logging.info('Connected to database')import os
+from urllib.parse import urlparse
+
+def connect():
+    global DB
+    url = urlparse(os.environ.get('DATABASE_URL', ''))
+    c = psycopg2.connect(
+        host=url.hostname,
+        port=url.port,
+        dbname=url.path[1:],
+        user=url.username,
+        password=url.password,
+        sslmode='require'
+    )
+    c.autocommit = False
+    DB['conn'] = c
+    DB['cursor'] = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    logging.info('Connected to database')
 DB = dict()
 
 DATABASE_URL = os.environ.get('DATABASE_URL', '')
