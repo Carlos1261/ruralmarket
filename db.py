@@ -15,6 +15,7 @@ def connect():
     c.autocommit = False
     DB['conn'] = c
     DB['cursor'] = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    create_tables()
     logging.info('Connected to database')
 
 def execute(sql, args=None):
