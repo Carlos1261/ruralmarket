@@ -30,10 +30,19 @@ def execute(sql, args=None):
     sql = re.sub(r'\?', '%s', sql)
     sql = re.sub(r'\s+', ' ', sql)
     logging.info('SQL: {} Args: {}'.format(sql, args))
-    if args is not None:
-        DB['cursor'].execute(sql, args)
-    else:
-        DB['cursor'].execute(sql)
+    
+    try:
+        if args is not None:
+            DB['cursor'].execute(sql, args)
+        else:
+            DB['cursor'].execute(sql)
+    except Exception as e:
+        # Si la base de datos falla, hacemos un rollback automático
+        # Esto desbloquea la conexión para que el sitio no se caiga
+        DB['conn'].rollback()
+        logging.error(f"Error real en la base de datos: {e}")
+        raise e
+        
     return DB['cursor']
 
 def create_tables():
