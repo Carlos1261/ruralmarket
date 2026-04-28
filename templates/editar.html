@@ -37,7 +37,7 @@
   <div class="foto-grid-edit">
     {% for f in fotos %}
     <div class="foto-edit-item">
-      <img src="/static/fotos/{{ f['nome'] }}" alt="Foto {{ loop.index }}">
+      <img src="{{ f['nome'] }}" alt="Foto {{ loop.index }}">
       <label class="foto-apagar-label">
         <input type="checkbox" name="apagar_foto" value="{{ f['id'] }}">
         <span>🗑 Remover</span>
