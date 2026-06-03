@@ -46,9 +46,22 @@ def execute(sql, args=None):
     return DB['cursor']
 
 def create_tables():
+    # usuarios primero (anuncios la referencia con FK)
+    execute('''
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id       SERIAL PRIMARY KEY,
+            nome     TEXT NOT NULL,
+            email    TEXT NOT NULL UNIQUE,
+            senha    TEXT NOT NULL,
+            aprovado INTEGER DEFAULT 0,
+            admin    INTEGER DEFAULT 0,
+            data     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
     execute('''
         CREATE TABLE IF NOT EXISTS anuncios (
             id          SERIAL PRIMARY KEY,
+            usuario_id  INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
             titulo      TEXT NOT NULL,
             descricao   TEXT,
             preco       REAL,
@@ -59,15 +72,13 @@ def create_tables():
             data        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+    # tabla fotos — faltaba por completo
     execute('''
-        CREATE TABLE IF NOT EXISTS usuarios (
-            id       SERIAL PRIMARY KEY,
-            nome     TEXT NOT NULL,
-            email    TEXT NOT NULL UNIQUE,
-            senha    TEXT NOT NULL,
-            aprovado INTEGER DEFAULT 0,
-            admin    INTEGER DEFAULT 0,
-            data     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        CREATE TABLE IF NOT EXISTS fotos (
+            id         SERIAL PRIMARY KEY,
+            anuncio_id INTEGER NOT NULL REFERENCES anuncios(id) ON DELETE CASCADE,
+            nome       TEXT NOT NULL,
+            ordem      INTEGER DEFAULT 0
         )
     ''')
     DB['conn'].commit()
