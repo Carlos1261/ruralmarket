@@ -60,7 +60,7 @@ def headers_seguranca(response):
         "default-src 'self'; "
         "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; "
         "font-src 'self' https://fonts.gstatic.com; "
-        "img-src 'self' data:; "
+        "img-src 'self' data: https://res.cloudinary.com; "
         "script-src 'self' 'unsafe-inline';"
     )
     return response
@@ -260,8 +260,17 @@ def editar(id):
                               [foto_id, id]).fetchone()
             if foto:
                 try:
-                    os.remove(os.path.join(UPLOAD_FOLDER, foto['nome']))
-                except OSError:
+                    url = foto['nome']
+                    if 'cloudinary.com' in url:
+                        partes = url.split('/upload/')
+                        if len(partes) == 2:
+                            public_id = partes[1].rsplit('.', 1)[0]
+                            if '/' in public_id and public_id.split('/')[0].startswith('v'):
+                                public_id = public_id.split('/', 1)[1]
+                            cloudinary.uploader.destroy(public_id)
+                    else:
+                        os.remove(os.path.join(UPLOAD_FOLDER, url))
+                except Exception:
                     pass
                 db.execute('DELETE FROM fotos WHERE id = ?', [foto_id])
 
@@ -297,12 +306,21 @@ def eliminar(id):
         abort(404)
     if not user or (user['id'] != anuncio['usuario_id'] and not user['admin']):
         abort(403)
-    # Apaga ficheiros físicos das fotos
+    # Apaga fotos no Cloudinary
     fotos = fotos_do_anuncio(id)
     for f in fotos:
         try:
-            os.remove(os.path.join(UPLOAD_FOLDER, f['nome']))
-        except OSError:
+            url = f['nome']
+            if 'cloudinary.com' in url:
+                partes = url.split('/upload/')
+                if len(partes) == 2:
+                    public_id = partes[1].rsplit('.', 1)[0]
+                    if '/' in public_id and public_id.split('/')[0].startswith('v'):
+                        public_id = public_id.split('/', 1)[1]
+                    cloudinary.uploader.destroy(public_id)
+            else:
+                os.remove(os.path.join(UPLOAD_FOLDER, url))
+        except Exception:
             pass
     db.execute('DELETE FROM anuncios WHERE id = ?', [id])
     db.DB['conn'].commit()
